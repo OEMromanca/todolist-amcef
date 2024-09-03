@@ -11,8 +11,8 @@ interface NavLinkProps {
 const NavLink: React.FC<NavLinkProps> = ({
   to,
   children,
-  activeClassName = 'bg-gray-300 text-gray-600 font-normal',
-  inactiveClassName = 'text-gray-500 hover:bg-gray-300 hover:text-gray-600',
+  activeClassName = 'bg-gray-300 text-gray-600 font-normal w-full',
+  inactiveClassName = 'text-gray-500 hover:bg-gray-300 hover:text-gray-600 w-full',
 }) => {
   const location = useLocation();
 

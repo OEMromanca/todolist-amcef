@@ -1,7 +1,8 @@
 import { format, isValid, parseISO } from 'date-fns';
 import { FilterKey } from '../interfaces';
 import { useParams } from 'react-router-dom';
-import { FILTER_MAP } from './filterMap';
+import { FILTER_NAMES } from './filterMap';
+import { useFilteredTodos } from '../hooks/queries';
 
 export const generateUniqueId = (): string => {
   const timestamp = Date.now().toString(36);
@@ -56,10 +57,27 @@ export const transformText = (
 
 export const useFilterFromParams = (): FilterKey => {
   const { filter } = useParams<{ filter?: string }>();
-  if (filter && filter in FILTER_MAP) {
-    return filter as FilterKey;
-  } else {
-    console.error(`Invalid filter parameter: ${filter}`);
-    return 'all';
+
+  const validFilter =
+    filter && FILTER_NAMES.includes(filter as FilterKey)
+      ? (filter as FilterKey)
+      : 'all';
+
+  if (filter && !FILTER_NAMES.includes(filter as FilterKey)) {
+    console.error(`Invalid filter parameter: ${filter}. Defaulting to 'all'.`);
   }
+
+  return validFilter;
+};
+
+export const useCountTodos = (filter: FilterKey) => {
+  const { data: todos, isSuccess } = useFilteredTodos(filter);
+
+  if (!isSuccess || !todos) return 0;
+
+  if (filter === 'all') {
+    return todos.length;
+  }
+
+  return todos.length;
 };
